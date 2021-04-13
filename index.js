@@ -100,6 +100,8 @@ const buildDiffMaskImage = (png1, png2, options, callback) => {
     const minWidth = Math.min(png1.width, png2.width);
     const minHeight = Math.min(png1.height, png2.height);
     const highlightColor = options.highlightColor;
+    const transparency = options.transparency;
+    const spread = options.spread;
     const result = png.empty(width, height);
 
     iterateRect(width, height, (x, y) => {
@@ -112,7 +114,7 @@ const buildDiffMaskImage = (png1, png2, options, callback) => {
         const color2 = png2.getPixel(x, y);
 
         if (!options.comparator({color1, color2, png1, png2, x, y, width, height})) {
-            result.highlightPixel(x, y, width, height, highlightColor, 0.5, 5);
+            result.highlightPixel(x, y, width, height, highlightColor, transparency, spread);
         } else {
             result.setTransparentPixel(x, y);
         }

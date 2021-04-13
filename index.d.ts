@@ -163,6 +163,14 @@ interface CreateDiffOptions extends CreateDiffAsBufferOptions {
     diff: string;
 }
 
+interface CreateDiffMaskOptions extends CreateDiffOptions {
+    /**
+     * The diff image path to store
+     */
+    transparency: number;
+    spread: number;
+}
+
 /**
  * Pass to looksSame.colors function
  */
@@ -210,8 +218,7 @@ declare function looksSame(
 declare module looksSame {
     export function createDiff(options: CreateDiffOptions, callback: (error: Error | null) => any): void;
     export function createDiff(options: CreateDiffAsBufferOptions, callback: (error: Error | null, buffer: Buffer) => any): void;
-    export function createDiffMask(options: CreateDiffOptions, callback: (error: Error | null) => any): void;
-
+    export function createDiffMask(options: CreateDiffMaskOptions, callback: (error: Error | null) => any): void;
 
     /**
      * Compare two colors
