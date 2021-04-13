@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.3.2](https://github.com/gemini-testing/looks-same/compare/v7.3.1...v7.3.2) (2021-04-13)
+
 ### [7.3.1](https://github.com/gemini-testing/looks-same/compare/v7.3.0...v7.3.1) (2021-04-13)
 
 ## [7.3.0](https://github.com/gemini-testing/looks-same/compare/v7.2.4...v7.3.0) (2021-02-03)
