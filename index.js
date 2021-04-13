@@ -93,6 +93,32 @@ const buildDiffImage = (png1, png2, options, callback) => {
     }, () => callback(result));
 };
 
+// eslint-disable-next-line no-unused-vars
+const buildDiffMaskImage = (png1, png2, options, callback) => {
+    const width = Math.max(png1.width, png2.width);
+    const height = Math.max(png1.height, png2.height);
+    const minWidth = Math.min(png1.width, png2.width);
+    const minHeight = Math.min(png1.height, png2.height);
+    const highlightColor = options.highlightColor;
+    const result = png.empty(width, height);
+
+    iterateRect(width, height, (x, y) => {
+        if (x >= minWidth || y >= minHeight) {
+            result.setPixel(x, y, highlightColor);
+            return;
+        }
+
+        const color1 = png1.getPixel(x, y);
+        const color2 = png2.getPixel(x, y);
+
+        if (!options.comparator({color1, color2, png1, png2, x, y, width, height})) {
+            result.highlightPixel(x, y, width, height, highlightColor, 0.5, 5);
+        } else {
+            result.setTransparentPixel(x, y);
+        }
+    }, () => callback(result));
+};
+
 const parseColorString = (str) => {
     const parsed = parseColor(str || '#ff00ff');
 
@@ -232,6 +258,32 @@ exports.createDiff = function saveDiff(opts, callback) {
             };
 
             buildDiffImage(first, second, diffOptions, (result) => {
+                if (opts.diff === undefined) {
+                    result.createBuffer(callback);
+                } else {
+                    result.save(opts.diff, callback);
+                }
+            });
+        })
+        .catch(error => {
+            callback(error);
+        });
+};
+
+exports.createDiffMask = function saveDiff(opts, callback) {
+    opts = prepareOpts(opts);
+
+    const [image1, image2] = utils.formatImages(opts.reference, opts.current);
+
+    utils
+        .readPair(image1, image2)
+        .then(({first, second}) => {
+            const diffOptions = {
+                highlightColor: parseColorString(opts.highlightColor),
+                comparator: createComparator(first, second, opts)
+            };
+
+            buildDiffMaskImage(first, second, diffOptions, (result) => {
                 if (opts.diff === undefined) {
                     result.createBuffer(callback);
                 } else {
